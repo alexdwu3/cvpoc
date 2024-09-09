@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useCampaigns } from './CampaignContext.tsx';
 
 interface AppStatus {
+  id: number;
   name: string;
-  status: 'Not Started' | 'In Progress' | 'Completed';
+  owner: string;
+  status: 'Not Started' | 'In Progress' | 'Migrated';
   notes: string;
 }
 
 const CampaignDashboard: React.FC = () => {
-  const location = useLocation();
-  const { campaign, selectedApps } = location.state as { campaign: any, selectedApps: string[] };
-  
-  // Mock data for app statuses - in a real app, this would come from your backend
-  const [appStatuses, setAppStatuses] = useState<AppStatus[]>(
-    selectedApps.map(app => ({ name: app, status: 'Not Started', notes: '' }))
-  );
+  const { id } = useParams<{ id: string }>();
+  const { campaigns } = useCampaigns();
+  const [appStatuses, setAppStatuses] = useState<AppStatus[]>([]);
 
-  const completionPercentage = (appStatuses.filter(app => app.status === 'Completed').length / appStatuses.length) * 100;
+  const campaign = campaigns.find(c => c.id === id);
 
-  const updateAppStatus = (appName: string, newStatus: AppStatus['status'], notes: string) => {
+  useEffect(() => {
+    if (campaign && campaign.apps) {
+      setAppStatuses(campaign.apps.map(app => ({ ...app, notes: '' })));
+    }
+  }, [campaign]);
+
+  if (!campaign) {
+    return <div>Campaign not found</div>;
+  }
+
+  const completionPercentage = (appStatuses.filter(app => app.status === 'Migrated').length / appStatuses.length) * 100 || 0;
+
+  const updateAppStatus = (appId: number, newStatus: AppStatus['status'], notes: string) => {
     setAppStatuses(prev => prev.map(app => 
-      app.name === appName ? { ...app, status: newStatus, notes } : app
+      app.id === appId ? { ...app, status: newStatus, notes } : app
     ));
   };
 
@@ -28,10 +39,11 @@ const CampaignDashboard: React.FC = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">{campaign.name} Dashboard</h1>
       <div className="mb-4">
-        <p><strong>Description:</strong> {campaign.description}</p>
-        <p><strong>Date Range:</strong> {campaign.startDate} to {campaign.endDate}</p>
-        <p><strong>Type:</strong> {campaign.type}</p>
-        <p><strong>Task:</strong> {campaign.task}</p>
+        <p><strong>Start Date:</strong> {campaign.startDate}</p>
+        <p><strong>End Date:</strong> {campaign.endDate}</p>
+        <p><strong>Status:</strong> {campaign.status}</p>
+        <p><strong>Affected Team:</strong> {campaign.affectedTeam}</p>
+        <p><strong>Filter Tags:</strong> {campaign.filterTags.join(', ')}</p>
       </div>
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Overall Progress</h2>
@@ -43,21 +55,22 @@ const CampaignDashboard: React.FC = () => {
       <h2 className="text-xl font-semibold mb-2">Application Statuses</h2>
       <div className="space-y-4">
         {appStatuses.map(app => (
-          <div key={app.name} className="border p-4 rounded">
+          <div key={app.id} className="border p-4 rounded">
             <h3 className="font-semibold">{app.name}</h3>
+            <p>Owner: {app.owner}</p>
             <p>Status: {app.status}</p>
             <select
               value={app.status}
-              onChange={(e) => updateAppStatus(app.name, e.target.value as AppStatus['status'], app.notes)}
+              onChange={(e) => updateAppStatus(app.id, e.target.value as AppStatus['status'], app.notes)}
               className="mt-2 border rounded px-2 py-1"
             >
               <option value="Not Started">Not Started</option>
               <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
+              <option value="Migrated">Migrated</option>
             </select>
             <textarea
               value={app.notes}
-              onChange={(e) => updateAppStatus(app.name, app.status, e.target.value)}
+              onChange={(e) => updateAppStatus(app.id, app.status, e.target.value)}
               placeholder="Add notes here..."
               className="mt-2 w-full border rounded px-2 py-1"
             />

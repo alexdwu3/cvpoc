@@ -239,11 +239,11 @@ const CampaignFilterApp: React.FC = () => {
     });
 
     setFilteredApps(newFilteredApps);
-  }, [filters, selectedManagers]);
+  }, [filters, selectedManagers, getSubordinates]);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Campaign Tool</h1>
+      <h1 className="text-2xl font-bold mb-4">Create a Campaign</h1>
       <div className="flex flex-row">
         <div className="w-2/3 pr-4">
           <div className="mb-4">
