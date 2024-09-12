@@ -12,6 +12,9 @@ const LandingPage: React.FC = () => {
         <Link to="/campaigns" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
           View Existing Campaigns
         </Link>
+        <Link to="/applicable-campaigns" className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+          View Applicable Campaigns
+        </Link>
       </div>
     </div>
   );

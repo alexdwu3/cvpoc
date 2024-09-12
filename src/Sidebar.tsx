@@ -8,6 +8,7 @@ const Sidebar: React.FC = () => {
     { path: '/', label: 'Home' },
     { path: '/campaigns', label: 'Existing Campaigns' },
     { path: '/create-campaign', label: 'Create Campaign' },
+    { path: '/applicable-campaigns', label: 'Applicable Campaigns' }, // New item
   ];
 
   return (

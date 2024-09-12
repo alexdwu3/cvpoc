@@ -7,6 +7,7 @@ import CampaignDetailsForm from "./CampaignDetailsForm.tsx";
 import CampaignDashboard from "./CampaignDashboard.tsx";
 import CampaignList from "./CampaignList.tsx";
 import CampaignDetails from "./CampaignDetails.tsx";
+import ApplicableCampaignsPage from "./ApplicableCampaignsPage.tsx";
 import { CampaignProvider } from "./CampaignContext.tsx";
 
 const App: React.FC = () => {
@@ -32,6 +33,10 @@ const App: React.FC = () => {
                 path="/campaign-details/:id"
                 element={<CampaignDetails />}
               />
+              <Route
+                path="/applicable-campaigns"
+                element={<ApplicableCampaignsPage />}
+              />{" "}
             </Routes>
           </div>
         </div>
