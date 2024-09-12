@@ -18,7 +18,7 @@ interface Campaign {
     id: number;
     name: string;
     owner: string;
-    status: 'Not Started' | 'In Progress' | 'Migrated';
+    status: 'Not Started' | 'In Progress' | 'Completed';
   }[];
   selectedApps: string[];
 }

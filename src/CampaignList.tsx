@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Campaign {
   id: string;
@@ -15,7 +15,12 @@ interface Campaign {
 }
 
 const CampaignList: React.FC = () => {
-  // Use state to manage the campaigns
+  const navigate = useNavigate();
+
+  const handleViewDetails = (id: string) => {
+    navigate(`/campaign-dashboard/${id}`);
+  };
+
   const [campaigns, setCampaigns] = useState<Campaign[]>([
     {
       id: '1',
@@ -55,7 +60,6 @@ const CampaignList: React.FC = () => {
     },
   ]);
 
-  // Function to handle campaign deletion
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this campaign?')) {
       setCampaigns(campaigns.filter(campaign => campaign.id !== id));
@@ -83,7 +87,7 @@ const CampaignList: React.FC = () => {
               <p>Not Started Apps: {campaign.totalApps - campaign.migratedApps - campaign.inProgressApps}</p>
               <div className="mt-4 flex space-x-2">
                 <Link 
-                  to={`/campaign-details/${campaign.id}`} 
+                  to={`/campaign-dashboard/${campaign.id}`} 
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                   View Details
